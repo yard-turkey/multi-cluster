@@ -22,5 +22,12 @@ spec:
 ```
 *NOTE* This is not federated, guessing it will be at somepoint?
 
+```
+# oc --context=cluster1 create -f pvc-default.yaml 
+persistentvolumeclaim/ebs-default created
+
+# oc --context=cluster2 create -f pvc-default.yaml 
+persistentvolumeclaim/ebs-default created
+```
 
 2. Deploy your application
