@@ -1,5 +1,9 @@
 ## Pattern 1
 
+### Prereqs
+
+Make sure you have a federated cluster setup running in OCP 4.0. See [guide](https://docs.google.com/document/d/1QvSvA2JxSvqRFjc92gqFZnn9-aPd-bA6RcErsqbbW58/edit#).
+
 ### Summary
 
 In this pattern, we will simply deploy a Federated application across our clusters using the *EXISTING* default storageclass as scratch space and persistence.
