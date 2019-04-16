@@ -34,4 +34,18 @@ persistentvolumeclaim/ebs-default created
 persistentvolumeclaim/ebs-default created
 ```
 
-2. Deploy your application
+2. Deploy a simple [busybox](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/busybox-deployment.yaml) application
+
+```
+# oc --context=cluster1 create -f busybox-deployment.yaml 
+federateddeployment.types.federation.k8s.io/busybox created
+
+# oc --context=cluster2 get pods
+NAME                       READY   STATUS    RESTARTS   AGE
+busybox-6666ffbc4b-x9hfr   1/1     Running   0          36s
+
+# oc --context=cluster1 get pods
+NAME                                             READY   STATUS    RESTARTS   AGE
+busybox-6666ffbc4b-zwlb5                         1/1     Running   0          42s
+federation-controller-manager-78fdf7f5c4-9nrmn   1/1     Running   0          3h34m
+```
