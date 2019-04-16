@@ -9,29 +9,40 @@ Make sure you have a federated cluster setup running in OCP 4.0. See [guide](htt
 In this pattern, we will simply deploy a Federated application across our clusters using the *EXISTING* default storageclass as scratch space and persistence.
 
 ### Steps
-1. Create a [pvc](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/pvc-default.yaml) on each cluster where you will deploy your application.
+1. Create a [federated pvc](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/pvc-federated.yaml) to create storage using the default storageclass which your applicaton will consume.
 
 ```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: types.federation.k8s.io/v1alpha1
+kind: FederatedPersistentVolumeClaim
 metadata:
- name: ebs-default
+  name: ebs-default
 spec:
-  storageClassName: gp2
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+  template:
+    metadata:
+      name: ebs-default
+    spec:
+      storageClassName: gp2
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+  placement:
+    clusterNames:
+    - cluster2
+    - cluster1
 ```
-*NOTE* This is not federated, guessing it will be at somepoint?
+Now check and see that our PVC's were created and bound
 
 ```
-# oc --context=cluster1 create -f pvc-default.yaml 
-persistentvolumeclaim/ebs-default created
+[root@ip-10-0-30-112 ~]# oc --context=cluster2 get pvc
+NAME           STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+ebs-default    Bound     pvc-255ca901-606f-11e9-ab6d-0e86289ef8a8   1Gi        RWO            gp2            61m
 
-# oc --context=cluster2 create -f pvc-default.yaml 
-persistentvolumeclaim/ebs-default created
+[root@ip-10-0-30-112 ~]# oc --context=cluster1 get pvc
+NAME           STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+ebs-default    Bound     pvc-1fa6ca91-606f-11e9-8b5f-0e8757c373c8   1Gi        RWO            gp2            62m
+
 ```
 
 2. Deploy a simple [busybox](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/busybox-deployment.yaml) application
