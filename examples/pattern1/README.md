@@ -35,6 +35,10 @@ spec:
 Now check and see that our PVC's were created and bound
 
 ```
+# oc get federatedpersistentvolumeclaims
+NAME           AGE
+ebs-default   12m
+
 [root@ip-10-0-30-112 ~]# oc --context=cluster2 get pvc
 NAME           STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 ebs-default    Bound     pvc-255ca901-606f-11e9-ab6d-0e86289ef8a8   1Gi        RWO            gp2            61m
