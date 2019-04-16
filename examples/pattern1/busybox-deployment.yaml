@@ -24,7 +24,7 @@ spec:
             command: ["sleep", "600000"]
             volumeMounts:
             - mountPath: /usr/share/busybox/test
-            name: ebsvol
+              name: ebsvol
           volumes:
           - name: ebsvol
             persistentVolumeClaim:
