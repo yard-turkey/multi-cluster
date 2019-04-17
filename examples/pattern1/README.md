@@ -15,7 +15,14 @@ In this pattern, we will deploy a Federated application across our clusters fede
 ### Pattern 1 - A: Simple Federated App using Default StorageClass
 
 #### Steps
-1. Create a [federated pvc](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/pvc-federated.yaml) to create storage using the default storageclass which your applicaton will consume.
+1. Enable the PersistentVolumeClaims API Resource type for Federation.
+
+```
+# kubefed2 enable PersistentVolumes --federation-namespace=federation-test and --registry-namespace=federation-test
+# kubefed2 enable PersistentVolumeClaims --federation-namespace=federation-test and --registry-namespace=federation-test
+```
+
+2. Create a [federated pvc](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/pvc-federated.yaml) to create storage using the default storageclass which your applicaton will consume.
 
 ```yaml
 apiVersion: types.federation.k8s.io/v1alpha1
@@ -55,7 +62,7 @@ ebs-default    Bound     pvc-1fa6ca91-606f-11e9-8b5f-0e8757c373c8   1Gi        R
 
 ```
 
-2. Deploy a simple [busybox](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/busybox-deployment.yaml) application
+3. Deploy a simple [busybox](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/busybox-deployment.yaml) application
 
 ```
 # oc --context=cluster1 create -f busybox-deployment.yaml 
@@ -70,3 +77,37 @@ NAME                                             READY   STATUS    RESTARTS   AG
 busybox-6666ffbc4b-zwlb5                         1/1     Running   0          42s
 federation-controller-manager-78fdf7f5c4-9nrmn   1/1     Running   0          3h34m
 ```
+
+### Pattern 1 B: Federate Object Bucket and Object Bucket Claim with AWS s3 Provisioning StorageClass
+
+#### Steps
+
+1. Enable the PersistentVolumeClaims API Resource type for Federation.
+
+```
+# kubefed2 enable StorageClasses --federation-namespace=federation-test and --registry-namespace=federation-test
+# kubefed2 enable ObjectBuckets --federation-namespace=federation-test and --registry-namespace=federation-test
+# kubefed2 enable ObjectBucketClaims --federation-namespace=federation-test and --registry-namespace=federation-test
+```
+
+2. Create the Federated Owner Reference Secret for Bucket Provisioning in AWS
+
+```yaml
+apiVersion: types.federation.k8s.io/v1alpha1
+kind: FederatedSecret
+metadata:
+  name: s3-bucket-owner
+  namespace: federation-test
+spec:
+  template:
+    data:
+      AWS_ACCESS_KEY_ID: <base64 encoded aws access key>
+      AWS_SECRET_ACCESS_KEY: <base64 encoded aws secret key>
+    type: Opaque
+  placement:
+    clusterNames:
+    - cluster2
+    - cluster1
+```
+
+3. something
