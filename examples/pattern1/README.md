@@ -82,15 +82,16 @@ federation-controller-manager-78fdf7f5c4-9nrmn   1/1     Running   0          3h
 
 #### Steps
 
-1. Enable the PersistentVolumeClaims API Resource type for Federation.
+1. Enable the needed API Resource types for this Federation example.
 
 ```
+# kubefed2 enable Secrets --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable StorageClasses --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable ObjectBuckets --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable ObjectBucketClaims --federation-namespace=federation-test and --registry-namespace=federation-test
 ```
 
-2. Create the Federated Owner Reference Secret for Bucket Provisioning in AWS
+2. Create the Federated Owner Reference [Secret](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/owner-secret-federated.yaml) for Bucket Provisioning in AWS and execute it on your primary cluster.
 
 ```yaml
 apiVersion: types.federation.k8s.io/v1alpha1
@@ -110,4 +111,33 @@ spec:
     - cluster1
 ```
 
-3. something
+Create the secret and verify.
+
+```
+# oc create -f owner-secret-federated.yaml
+
+# oc --context=cluster2 get secrets -n federation-test
+NAME                                TYPE                                  DATA   AGE
+builder-dockercfg-2x6rf             kubernetes.io/dockercfg               1      40h
+builder-token-29njj                 kubernetes.io/service-account-token   4      40h
+builder-token-8m4r9                 kubernetes.io/service-account-token   4      40h
+cluster2-cluster1-dockercfg-nr4xd   kubernetes.io/dockercfg               1      22h
+cluster2-cluster1-token-bgj8n       kubernetes.io/service-account-token   4      22h
+cluster2-cluster1-token-kc42m       kubernetes.io/service-account-token   4      22h
+default-dockercfg-77wz7             kubernetes.io/dockercfg               1      40h
+default-token-2vn5k                 kubernetes.io/service-account-token   4      40h
+default-token-lbpln                 kubernetes.io/service-account-token   4      40h
+deployer-dockercfg-js659            kubernetes.io/dockercfg               1      40h
+deployer-token-g89m7                kubernetes.io/service-account-token   4      40h
+deployer-token-mfnnz                kubernetes.io/service-account-token   4      40h
+s3-bucket-owner                     Opaque                                2      61s <1>
+```
+1. New federated secret on both clusters
+
+
+3. Create the StorageClass to dynamically provision buckets
+
+```yaml
+
+
+```
