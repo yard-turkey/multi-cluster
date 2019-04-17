@@ -6,9 +6,15 @@ Make sure you have a federated cluster setup running in OCP 4.0. See [guide](htt
 
 ### Summary
 
-In this pattern, we will simply deploy a Federated application across our clusters using the *EXISTING* default storageclass as scratch space and persistence.
+In this pattern, we will deploy a Federated application across our clusters federating any resources needed (StorageClass, PVC, Application, Secrets, etc...). We will model the following scenarios:
 
-### Steps
+- Pattern 1 A: Simple Federated App using Default StorageClass
+- Pattern 1 B: Federate Object Bucket and Object Bucket Claim with AWS s3 Provisioning StorageClass
+- Pattern 1 C: Federate Object Consuming App to Connect to Existing AWS S3 Bucket
+
+### Pattern 1 - A: Simple Federated App using Default StorageClass
+
+#### Steps
 1. Create a [federated pvc](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/pvc-federated.yaml) to create storage using the default storageclass which your applicaton will consume.
 
 ```yaml
