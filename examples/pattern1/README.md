@@ -82,16 +82,78 @@ federation-controller-manager-78fdf7f5c4-9nrmn   1/1     Running   0          3h
 
 #### Steps
 
-1. Enable the needed API Resource types for this Federation example.
+1. Create the Federated [OB CRD](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/ob-crd-federated.yaml) for Bucket provisioning
+
+```yaml
+apiVersion: types.federation.k8s.io/v1alpha1
+kind: FederatedCustomResourceDefinition
+metadata:
+  name: objectbuckets.objectbucket.io
+  namespace: federation-test
+spec:
+  template:
+    group: objectbucket.io
+    versions:
+      - name: v1alpha1
+        served: true
+        storage: true
+    names:
+      kind: ObjectBucket
+      listKind: ObjectBucketList
+      plural: objectbuckets
+      singular: objectbucket
+      shortNames:
+        - ob
+        - obs
+    scope: Cluster
+    subresources:
+      status: {}
+  placement:
+    clusterNames:
+    - cluster2
+    - cluster1
+---
+apiVersion: types.federation.k8s.io/v1alpha1
+kind: FederatedCustomResourceDefinition
+metadata:
+  name: objectbucketclaims.objectbucket.io
+  namespace: federation-test
+spec:
+  template:
+    group: objectbucket.io
+    versions:
+      - name: v1alpha1
+        served: true
+        storage: true
+    names:
+      kind: ObjectBucketClaim
+      listKind: ObjectBucketClaimList
+      plural: objectbucketclaims
+      singular: objectbucketclaim
+      shortNames:
+        - obc
+        - obcs
+    scope: Namespaced
+    subresources:
+      status: {}
+    placement:
+      clusterNames:
+      - cluster2
+      - cluster1
+```
+
+
+3. Enable the needed API Resource types for this Federation example.
 
 ```
 # kubefed2 enable Secrets --federation-namespace=federation-test and --registry-namespace=federation-test
+# kubefed2 enable CustomResourceDefinitions --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable StorageClasses --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable ObjectBuckets --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable ObjectBucketClaims --federation-namespace=federation-test and --registry-namespace=federation-test
 ```
 
-2. Create the Federated Owner Reference [Secret](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/owner-secret-federated.yaml) for Bucket Provisioning in AWS and execute it on your primary cluster.
+4. Create the Federated Owner Reference [Secret](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/owner-secret-federated.yaml) for Bucket Provisioning in AWS and execute it on your primary cluster.
 
 ```yaml
 apiVersion: types.federation.k8s.io/v1alpha1
@@ -135,7 +197,7 @@ s3-bucket-owner                     Opaque                                2     
 1. New federated secret on both clusters
 
 
-3. Create the StorageClass to dynamically provision buckets
+5. Create the StorageClass to dynamically provision buckets
 
 ```yaml
 
