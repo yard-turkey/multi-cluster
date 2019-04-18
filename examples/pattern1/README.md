@@ -82,6 +82,7 @@ federation-controller-manager-78fdf7f5c4-9nrmn   1/1     Running   0          3h
 
 #### Steps
 
+
 1. Enable the core federation resources.
 
 ```
@@ -93,8 +94,34 @@ federation-controller-manager-78fdf7f5c4-9nrmn   1/1     Running   0          3h
 # kubefed2 enable StorageClasses --federation-namespace=federation-test and --registry-namespace=federation-test
 ```
 
+2. Create the FederatedNamespace for federation-test
 
-2. Create the Federated [OB CRD](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/ob-crd-federated.yaml) for Bucket provisioning
+```yaml
+apiVersion: types.federation.k8s.io/v1alpha1
+kind: FederatedNamespace
+metadata:
+  name: federation-test
+  namespace: federation-test
+spec:
+  placement:
+    clusterNames:
+    - cluster2
+    - cluster1
+```
+
+Create the namespace
+```
+# oc create -f federated-ns.yaml
+federatednamespace.types.federation.k8s.io/federation-test created
+
+# oc get federatednamespaces
+NAME              AGE
+federation-test   7s
+
+```
+
+
+3. Create the Federated [OB CRD](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/ob-crd-federated.yaml) for Bucket provisioning
 
 ```yaml
 apiVersion: types.federation.k8s.io/v1alpha1
