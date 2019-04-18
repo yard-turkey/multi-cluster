@@ -82,7 +82,19 @@ federation-controller-manager-78fdf7f5c4-9nrmn   1/1     Running   0          3h
 
 #### Steps
 
-1. Create the Federated [OB CRD](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/ob-crd-federated.yaml) for Bucket provisioning
+1. Enable the core federation resources.
+
+```
+# kubefed2 enable Namespaces --federation-namespace=federation-test and --registry-namespace=federation-test
+# kubefed2 enable deployments.apps --federation-namespace=federation-test and --registry-namespace=federation-test
+# kubefed2 enable deployments.extensions --federation-namespace=federation-test and --registry-namespace=federation-test
+# kubefed2 enable Secrets --federation-namespace=federation-test and --registry-namespace=federation-test
+# kubefed2 enable CustomResourceDefinitions --federation-namespace=federation-test and --registry-namespace=federation-test
+# kubefed2 enable StorageClasses --federation-namespace=federation-test and --registry-namespace=federation-test
+```
+
+
+2. Create the Federated [OB CRD](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/ob-crd-federated.yaml) for Bucket provisioning
 
 ```yaml
 apiVersion: types.federation.k8s.io/v1alpha1
@@ -141,14 +153,22 @@ spec:
       - cluster2
       - cluster1
 ```
+Create the CRD
+```
+# oc create -f ob-crd-federated.yaml 
+federatedcustomresourcedefinition.types.federation.k8s.io/objectbuckets.objectbucket.io created
+federatedcustomresourcedefinition.types.federation.k8s.io/objectbucketclaims.objectbucket.io created
+
+# oc get federatedcustomresourcedefinitions
+NAME                                 AGE
+objectbucketclaims.objectbucket.io   3m6s
+objectbuckets.objectbucket.io        3m6s
+```
 
 
-3. Enable the needed API Resource types for this Federation example.
+3. Enable the OB and OBC API Resource types for this Federation example.
 
 ```
-# kubefed2 enable Secrets --federation-namespace=federation-test and --registry-namespace=federation-test
-# kubefed2 enable CustomResourceDefinitions --federation-namespace=federation-test and --registry-namespace=federation-test
-# kubefed2 enable StorageClasses --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable ObjectBuckets --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable ObjectBucketClaims --federation-namespace=federation-test and --registry-namespace=federation-test
 ```
