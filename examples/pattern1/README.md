@@ -240,9 +240,8 @@ default-token-lbpln                 kubernetes.io/service-account-token   4     
 deployer-dockercfg-js659            kubernetes.io/dockercfg               1      40h
 deployer-token-g89m7                kubernetes.io/service-account-token   4      40h
 deployer-token-mfnnz                kubernetes.io/service-account-token   4      40h
-s3-bucket-owner                     Opaque                                2      61s <1>
+s3-bucket-owner                     Opaque                                2      61s <here it is>
 ```
-1. New federated secret on both clusters
 
 
 5. Create the StorageClass to dynamically provision buckets
