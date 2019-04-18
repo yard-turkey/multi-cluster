@@ -191,7 +191,8 @@ NAME                                 AGE
 objectbucketclaims.objectbucket.io   3m6s
 objectbuckets.objectbucket.io        3m6s
 ```
-
+*NOTE:* This is not working, it does not create the CRD on each cluster - for now we will manually create the CRD for
+        OB and OBC on each cluster as a workaround.
 
 3. Enable the OB and OBC API Resource types for this Federation example.
 
