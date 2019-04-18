@@ -248,6 +248,32 @@ s3-bucket-owner                     Opaque                                2     
 5. Create the StorageClass to dynamically provision buckets
 
 ```yaml
+apiVersion: types.federation.k8s.io/v1alpha1
+kind: FederatedStorageClass
+metadata:
+  name: s3-buckets
+  namespace: federation-test
+spec:
+  template:
+    provisioner: aws-s3.io/bucket
+    parameters:
+      region: us-west-1
+      secretName: s3-bucket-owner
+      secretNamespace: s3-provisioner
+    reclaimPolicy: Delete
+  placement:
+    clusterNames:
+    - cluster1
+    - cluster2
+```
 
+Create the StorageClass
+
+```
+# oc create storageclass-federated.yaml
+
+# oc get sc
+
+# oc --context=cluster2 get sc
 
 ```
