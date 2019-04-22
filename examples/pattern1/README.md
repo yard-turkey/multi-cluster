@@ -276,3 +276,5 @@ Create the StorageClass
 # oc --context=cluster2 get sc
 
 ```
+
+*NOTE:* This is not working, it does not create the SC on each cluster - for now we will manually create as workaround.
