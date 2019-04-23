@@ -194,6 +194,16 @@ objectbuckets.objectbucket.io        3m6s
 *NOTE:* This is not working, it does not create the CRD on each cluster - for now we will manually create the CRD for
         OB and OBC on each cluster as a workaround.
 
+```
+# oc --context=cluster1 create -f crd.yaml 
+customresourcedefinition.apiextensions.k8s.io/objectbuckets.objectbucket.io created
+customresourcedefinition.apiextensions.k8s.io/objectbucketclaims.objectbucket.io created
+
+# oc --context=cluster2 create -f crd.yaml 
+customresourcedefinition.apiextensions.k8s.io/objectbuckets.objectbucket.io created
+customresourcedefinition.apiextensions.k8s.io/objectbucketclaims.objectbucket.io created
+```
+
 3. Enable the OB and OBC API Resource types for this Federation example.
 
 ```
