@@ -286,5 +286,46 @@ Create the StorageClass
 # oc --context=cluster2 get sc
 
 ```
-
 *NOTE:* This is not working, it does not create the SC on each cluster - for now we will manually create as workaround.
+
+
+6. Create our FederatedDeployment for the AWS-S3-Provisioner (when containerized - for now manually run).
+```
+# ./awss3provisioner-scott -master https://api.screeley-cluster1.screeley.sysdeseng.com -kubeconfig /root/.kube/config -alsologtostderr -v=2
+```
+
+7.  Enable the CRD api type.
+
+```
+# kubefed2 enable objectbucketclaims
+customresourcedefinition.apiextensions.k8s.io/federatedobjectbucketclaims.types.federation.k8s.io created
+federatedtypeconfig.core.federation.k8s.io/objectbucketclaims.objectbucket.io created in namespace federation-system
+
+# kubefed2 enable objectbuckets
+customresourcedefinition.apiextensions.k8s.io/federatedobjectbuckets.types.federation.k8s.io created
+federatedtypeconfig.core.federation.k8s.io/objectbuckets.objectbucket.io created in namespace federation-system
+```
+
+8. (After above is working) Create our FederatedObjectBucketClaim on CLUSTER1 only (greenfield).
+
+```yaml
+apiVersion: types.federation.k8s.io/v1alpha1
+kind: FederatedObjectBucketClaim
+metadata:
+  name: green-obc
+  namespace: federation-test
+spec:
+  template:
+    spec:
+      bucketName: screeley-fed-bucket
+      storageClassName: s3-buckets
+  placement:
+    clusterNames:
+    - cluster1
+
+```
+
+
+9. Create another FederatedObjectBucketClaim on remaining clusters to connect to existing bucket created above.
+
+
