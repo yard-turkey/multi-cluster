@@ -114,7 +114,7 @@ spec:
     - cluster1
 ```
 
-Create the namespace
+execute the namespace yaml
 ```
 # oc create -f federated-ns.yaml
 federatednamespace.types.federation.k8s.io/federation-test created
@@ -125,8 +125,14 @@ federation-test   7s
 
 ```
 
+3. Manually create the [OB/OBC CRD](https://github.com/yard-turkey/lib-bucket-provisioner/blob/master/deploy/customResourceDefinitions.yaml) on each of your clusters (THIS IS NOT PROPAGATED VIA FEDERATION YET).
 
-3. Create the Federated [OB CRD](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/ob-crd-federated.yaml) for Bucket provisioning
+```
+Once this is properly propagated via federation - this step will no longer be needed, but for now you need to do this step on each cluster AND as good practice also do step 4 below to add the crd into the federated resources just so federation tracks and knows about the crd.
+```
+
+
+4. Create the Federated [OB CRD](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/ob-crd-federated.yaml) for Bucket provisioning
 
 ```yaml
 apiVersion: types.federation.k8s.io/v1alpha1
@@ -209,14 +215,14 @@ customresourcedefinition.apiextensions.k8s.io/objectbuckets.objectbucket.io crea
 customresourcedefinition.apiextensions.k8s.io/objectbucketclaims.objectbucket.io created
 ```
 
-3. Enable the OB and OBC API Resource types for this Federation example.
+5. Enable the OB and OBC API Resource types for this Federation example.
 
 ```
 # kubefed2 enable ObjectBuckets --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable ObjectBucketClaims --federation-namespace=federation-test and --registry-namespace=federation-test
 ```
 
-4. Create the Federated Owner Reference [Secret](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/owner-secret-federated.yaml) for Bucket Provisioning in AWS and execute it on your primary cluster.
+6. Create the Federated Owner Reference [Secret](https://github.com/yard-turkey/multi-cluster/edit/master/examples/pattern1/owner-secret-federated.yaml) for Bucket Provisioning in AWS and execute it on your primary cluster.
 
 ```yaml
 apiVersion: types.federation.k8s.io/v1alpha1
@@ -259,7 +265,7 @@ s3-bucket-owner                     Opaque                                2     
 ```
 
 
-5. Create the StorageClass to dynamically provision buckets
+7. Create the StorageClass to dynamically provision buckets
 
 ```yaml
 apiVersion: types.federation.k8s.io/v1alpha1
@@ -294,12 +300,12 @@ Create the StorageClass
 *NOTE:* This is not working, it does not create the SC on each cluster - for now we will manually create as workaround.
 
 
-6. Create our FederatedDeployment for the AWS-S3-Provisioner (when containerized - for now manually run).
+8. Create our FederatedDeployment for the AWS-S3-Provisioner (when containerized - for now manually run).
 ```
 # ./awss3provisioner-scott -master https://api.screeley-cluster1.screeley.sysdeseng.com -kubeconfig /root/.kube/config -alsologtostderr -v=2
 ```
 
-7.  Enable the CRD api type.
+9.  Enable the CRD api type.
 
 ```
 # kubefed2 enable objectbucketclaims
@@ -311,7 +317,7 @@ customresourcedefinition.apiextensions.k8s.io/federatedobjectbuckets.types.feder
 federatedtypeconfig.core.federation.k8s.io/objectbuckets.objectbucket.io created in namespace federation-system
 ```
 
-8. (After above is working) Create our FederatedObjectBucketClaim on CLUSTER1 only (greenfield).
+10. (After above is working) Create our FederatedObjectBucketClaim on CLUSTER1 only (greenfield).
 
 ```yaml
 apiVersion: types.federation.k8s.io/v1alpha1
@@ -331,6 +337,6 @@ spec:
 ```
 
 
-9. Create another FederatedObjectBucketClaim on remaining clusters to connect to existing bucket created above.
+11. Create another FederatedObjectBucketClaim on remaining clusters to connect to existing bucket created above.
 
 
