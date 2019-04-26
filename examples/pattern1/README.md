@@ -82,6 +82,7 @@ federation-controller-manager-78fdf7f5c4-9nrmn   1/1     Running   0          3h
 
 #### Steps
 
+** Assumes federation is fully installed and running in your control plane and federation-test namespace exists on both clusters
 
 1. Enable the core federation resources.
 
@@ -92,6 +93,10 @@ federation-controller-manager-78fdf7f5c4-9nrmn   1/1     Running   0          3h
 # kubefed2 enable Secrets --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable CustomResourceDefinitions --federation-namespace=federation-test and --registry-namespace=federation-test
 # kubefed2 enable StorageClasses --federation-namespace=federation-test and --registry-namespace=federation-test
+```
+single line command
+```
+kubefed2 enable Namespaces --federation-namespace=federation-test and --registry-namespace=federation-test;kubefed2 enable deployments.extensions --federation-namespace=federation-test and --registry-namespace=federation-test;kubefed2 enable CustomResourceDefinitions --federation-namespace=federation-test and --registry-namespace=federation-test;kubefed2 enable StorageClasses --federation-namespace=federation-test and --registry-namespace=federation-test
 ```
 
 2. Create the FederatedNamespace for federation-test
