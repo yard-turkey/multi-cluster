@@ -2,7 +2,8 @@
 
 ### Prereqs
 
-Make sure you have a federated cluster setup running in OCP 4.0. See [guide](https://docs.openshift.com/container-platform/4.1/welcome/index.html?extIdCarryOver=true&sc_cid=701f2000001Css0AAC).
+- Make sure you have a federated cluster setup running in OCP 4.0. See [guide](https://docs.openshift.com/container-platform/4.1/welcome/index.html?extIdCarryOver=true&sc_cid=701f2000001Css0AAC).
+- Install the KubeFed Operator and Resource (cluster-scoped) in appropriate namespace
 
 ### Summary
 
